@@ -1,0 +1,10 @@
+Package: mmmisc
+Title: Miles' util functions for rad R times.
+Version: 0.0.1
+Authors@R: person("Miles", "McBain", email = "miles.mcbain@gmail.com", role = c("aut", "cre"))
+Description: Assorted utility functions. 
+Depends: R (>= 3.4.0)
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
