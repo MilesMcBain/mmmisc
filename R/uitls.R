@@ -145,4 +145,51 @@ is_R_file <- function(filename){
           text = filename) > 0
 }
 
+#' Return matching characters matching an expression.
+#' 
+#' Given a vector of chracter strings, this function returns matches as a vector.
+#' This allows a chainable regex filtering style that is readily compatible with `%>%`.
+#' All matches from the resulting regexec call are pasted together. This will create
+#' weird behaviour if you use capturing groups. Best to use non-capturing `(?:)`.
+#'
+#' @param text a vector of charcter strings to be matched.
+#' @param pattern a regular expression.
+#'
+#' @return vector of substrings of `text` that matched the `pattern`.
+#' @export
+#' @examples
+#' \dontrun{
+#' rblogger_urls %>%
+#'   regex_match("(?<=\")http.*(?=\")") %>%
+#'   regex_match_except("^https*://") %>%
+#'   regex_match("[A-Za-z0-9-.]+(?=/|\"|$)") %>%
+#'   datapasta::dpasta()
+#  c("dmlc.ml", "lionel-.github.io", "jean9208.github.io", "ryouready.wordpress.com", "rveryday.wordpress.com", 
+#  "www.talyarkoni.org", "rtricks.wordpress.com")
+#' }
+regex_match <- function(text, pattern){
+  text_matches <- regexec(text = text, pattern = pattern, perl = TRUE)
+  match_content <- regmatches(text, text_matches)
+  unlist(lapply(match_content, paste0, collapse = ""))
+}
+
+#' Return characters not matching a regular expression
+#'
+#' Given a vector of chracter strings, this function returns portions of the stirng
+#' that do not march a pattern, as a vector. This allows a chainable regex
+#' filtering style that is readily compatible with `%>%`.
+#' All matches from the resulting regexec call are pasted together. This will create
+#' weird behaviour if you use capturing groups. Best to use non-capturing `(?:)`.
+#'
+#' @param text a vector of characer strings to be (un)matched.
+#' @param pattern a regular expression.
+#'
+#' @return vector of substrings of `text` that dit not match the `pattern`.
+#' @export
+regex_match_except <- function(text, pattern){
+  text_matches <- regexec(text = text, pattern = pattern, perl = TRUE)
+  match_content <- regmatches(text, text_matches, invert = TRUE)
+  unlist(lapply(match_content, paste0, collapse = ""))
+}
+
 
