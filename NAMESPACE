@@ -2,6 +2,7 @@
 
 export(P0PE)
 export(cross_paste0)
+export(drive_download_dir)
 export(how_to)
 export(is_R_file)
 export(map_ifelse)

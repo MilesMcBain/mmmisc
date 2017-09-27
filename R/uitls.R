@@ -146,7 +146,7 @@ is_R_file <- function(filename){
 }
 
 #' Return matching characters matching an expression.
-#' 
+#'
 #' Given a vector of chracter strings, this function returns matches as a vector.
 #' This allows a chainable regex filtering style that is readily compatible with `%>%`.
 #' All matches from the resulting regexec call are pasted together. This will create
@@ -164,7 +164,7 @@ is_R_file <- function(filename){
 #'   regex_match_except("^https*://") %>%
 #'   regex_match("[A-Za-z0-9-.]+(?=/|\"|$)") %>%
 #'   datapasta::dpasta()
-#  c("dmlc.ml", "lionel-.github.io", "jean9208.github.io", "ryouready.wordpress.com", "rveryday.wordpress.com", 
+#  c("dmlc.ml", "lionel-.github.io", "jean9208.github.io", "ryouready.wordpress.com", "rveryday.wordpress.com",
 #  "www.talyarkoni.org", "rtricks.wordpress.com")
 #' }
 regex_match <- function(text, pattern){
@@ -190,6 +190,52 @@ regex_match_except <- function(text, pattern){
   text_matches <- regexec(text = text, pattern = pattern, perl = TRUE)
   match_content <- regmatches(text, text_matches, invert = TRUE)
   unlist(lapply(match_content, paste0, collapse = ""))
+}
+
+
+#' Download a folder from Google Drive
+#'
+#' @param drive_folder a google drive folder path or id
+#' @param dl_path a local path to dowload the folder to. Defaults to getwd().
+#'
+#' @return nothing.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' drive_download_dir(
+#' drive_folder = as_id("https://drive.google.com/open?id=0B7688WPR38x2Nk5yYV9ZMVYwWVE"),
+#' dl_path = "./models")
+#' }
+drive_download_dir <- function(drive_folder = NULL, dl_path = getwd() ){
+
+  if(is.null(drive_folder)){
+    stop("Expected a Google Drive folder for drive_folder, got NULL." )
+  }
+
+  if(!googledrive::is_folder(googledrive::drive_get(id = drive_folder))){
+    stop("Expected a Google Drive folder for drive_folder, got an id for something else.")
+  }
+
+  drive_items <- googledrive::drive_ls(googledrive::as_id(drive_folder))
+
+  drive_items$mimeType <-
+    purrr::map_chr(drive_items$drive_resource, "mimeType")
+
+  folders <- drive_items[drive_items$mimeType == "application/vnd.google-apps.folder",]
+  files <- drive_items[drive_items$mimeType != "application/vnd.google-apps.folder",]
+
+  #recurse into folders, updating download path
+  purrr::pwalk(.l = list(drive_folder = folders$id, dl_path = file.path(dl_path, folders$name)),
+        .f = drive_download_dir)
+
+  #Make the file dl path if it doesn't exist
+  if(!dir.exists(dl_path)){
+    dir.create(dl_path, recursive = TRUE)
+  }
+  #download files, to current download path
+  purrr::pwalk(.l = list( file = files$id, path = file.path(dl_path, files$name)),
+        .f = ~googledrive::drive_download(file = googledrive::as_id(..1), path = ..2))
 }
 
 
