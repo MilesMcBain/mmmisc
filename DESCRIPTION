@@ -4,6 +4,9 @@ Version: 0.0.1
 Authors@R: person("Miles", "McBain", email = "miles.mcbain@gmail.com", role = c("aut", "cre"))
 Description: Assorted utility functions. 
 Depends: R (>= 3.4.0)
+Suggests:
+    purrr,
+    googledrive
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
