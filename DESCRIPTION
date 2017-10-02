@@ -6,7 +6,8 @@ Description: Assorted utility functions.
 Depends: R (>= 3.4.0)
 Suggests:
     purrr,
-    googledrive
+    googledrive,
+    testthat
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

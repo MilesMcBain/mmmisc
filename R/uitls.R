@@ -192,6 +192,37 @@ regex_match_except <- function(text, pattern){
   unlist(lapply(match_content, paste0, collapse = ""))
 }
 
+regex_sub <- function(text, pattern, replacement, sub_all = TRUE){
+  if(sub_all){
+    sub_func <- gsub
+  } else {
+    sub_func <- sub
+  }
+
+  if(length(replacement) == length(text)){
+    result <-
+      mapply(
+        FUN = sub_func,
+        replacement = replacement,
+        x = text,
+        MoreArgs = list(
+          pattern = pattern,
+          perl = TRUE
+        )
+      )
+  } else if(length(replacement) == 1){
+    result <- sub_func(pattern,
+                       replacement,
+                       x = text,
+                       perl = TRUE
+                       )
+  } else {
+    stop("regex sub expected replacement argument of
+         length ", length(text)," or length 1 got length",
+         length(replacement),".")
+  }
+  result
+}
 
 #' Download a folder from Google Drive
 #'
