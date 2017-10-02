@@ -192,6 +192,30 @@ regex_match_except <- function(text, pattern){
   unlist(lapply(match_content, paste0, collapse = ""))
 }
 
+#' Substitute characters matching a regular expression.
+#'
+#' Given a vector of character strings, substitute parts of the strings
+#' matching `pattern` with `replacement`. `replacement` can be a vector
+#' argument, in which case it must be the same length as `text`, and
+#' the substiuted `text` is made per `replacement` string.
+#'
+#' The default mode is to substitute all pattern matches. This can be
+#' switched to first match only by setting `sub_all = FALSE`.
+#'
+#' @param text a vector of character strings to have patterns substituted.
+#' @param pattern a string pattern that, if matched in `text` will be substituded with `replacement`.
+#' @param replacement either a string or vector of strings to replace matching patterns in `text`.
+#' @param sub_all Determined if all matches are substited (default), or the first ocurrence per input string.
+#'
+#' @return a vector of character strings
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' regex_sub(c("ABC", "AXYZ", "DEFA"),"A", "_")
+#' regex_sub(c("ABC_", "AXY_", "DEF_"),"_", c(1,2,3)
+#' }
+#'
 regex_sub <- function(text, pattern, replacement, sub_all = TRUE){
   if(sub_all){
     sub_func <- gsub
