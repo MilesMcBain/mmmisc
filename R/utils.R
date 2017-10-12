@@ -9,7 +9,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' how_to("naniar")
+#' howto("naniar")
 #' }
 howto <- function(package){
   package <- as.character(substitute(package))
