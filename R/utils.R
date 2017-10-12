@@ -41,17 +41,25 @@ howto <- function(package){
 webdocs <- function(package_name){
   package_name <- as.character(substitute(package_name))
 
-  desc <- xml2::read_html(url(paste0("https://cran.r-project.org/package=",package_name)))
+  html_table <-
+    rvest::html_nodes(
+      xml2::read_html(
+        url(paste0(
+          "https://cran.r-project.org/package=",
+          package_name)
+          )
+        ), "table tr")
+
   URL_el <-
-    desc %>%
-    html_nodes("table tr") %>%
-    grep(x =. , pattern = "URL", value = TRUE)
+    grep(x = html_table, pattern = "URL", value = TRUE)
+
   if(nzchar(URL_el)){
-    pack_URL <-
-      URL_el %>%
-      haircut::regex_match("\"htt.*\"") %>%
-      haircut::regex_match_except("\"")
-    browseURL(pack_URL)
+
+    pack_URL <- haircut::regex_match(
+         strsplit(URL_el, ",")[[1]],
+         "htt.*(?=\">)"
+      )
+    lapply(pack_URL, browseURL)
   }
   else{
     message("No website for ", package_name, "!")
