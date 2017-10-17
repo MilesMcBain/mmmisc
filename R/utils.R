@@ -328,4 +328,16 @@ drive_download_dir <- function(drive_folder = NULL, dl_path = getwd() ){
         .f = ~googledrive::drive_download(file = googledrive::as_id(..1), path = ..2))
 }
 
-
+#' Count NAs in Data Frame
+#'
+#' @param df a data frame.
+#'
+#' @return A named vector with column NA counts.
+#' @export
+#'
+#' @examples
+na_in <- function(df){
+  unlist(
+    purrr::map( ~sum(is.na(df)) )
+  )
+}
