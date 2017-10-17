@@ -244,6 +244,6 @@ drive_download_dir <- function(drive_folder = NULL, dl_path = getwd() ){
 #' @export
 na_in <- function(df){
   unlist(
-    purrr::map( ~sum(is.na(df)) )
+    purrr::map(df, ~sum(is.na(.)) )
   )
 }
