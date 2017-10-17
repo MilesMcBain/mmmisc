@@ -2,21 +2,23 @@
 % Please edit documentation in R/utils.R
 \name{webdocs}
 \alias{webdocs}
-\title{Open URL for a package from it's description file.}
+\title{Open URL(s) for a package from it's description file.}
 \usage{
 webdocs(package_name)
 }
 \arguments{
-\item{package_name}{the package to open URL for}
+\item{package_name}{the package to open URLs for}
 }
 \value{
 nothing
 }
 \description{
-The URL is fetched from CRAN, so the package need not be installed to run this function.
+The URL is fetched from CRAN, so the package need not be installed
+to run this function and navigate to web page.
 }
 \examples{
 \dontrun{
+webdocs(ggplot2)
 webdocs(visdat)
 }
 

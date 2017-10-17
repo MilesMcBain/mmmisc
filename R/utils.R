@@ -242,8 +242,6 @@ drive_download_dir <- function(drive_folder = NULL, dl_path = getwd() ){
 #'
 #' @return A named vector with column NA counts.
 #' @export
-#'
-#' @examples
 na_in <- function(df){
   unlist(
     purrr::map( ~sum(is.na(df)) )
