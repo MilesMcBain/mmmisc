@@ -69,6 +69,23 @@ webdocs <- function(package_name){
   invisible(NULL)
 }
 
+#' Web Help
+#'
+#' @param search_term to be searched for on rdocumentation.org
+#'
+#' @return A browser tab with search results
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' whelp(tribble_paste)
+#' }
+whelp <- function(search_term){
+  if(!missing(search_term)){
+    search_term <- as.character(substitute(search_term))
+    browseURL(paste0("https://www.rdocumentation.org/search?q=",search_term))
+  }
+}
 
 #' Remove variables with names like this
 #'
