@@ -264,3 +264,31 @@ na_in <- function(df){
     purrr::map(df, ~sum(is.na(.)) )
   )
 }
+
+#' Render an Rmd file in directory
+#'
+#' This function is a replacement for the 'knit' from RStudio, for cases where you're not
+#' working in RStudio.
+#'
+#' Searches for all Rmd files below the `path` and prompts for
+#' a selection of one to be rendered. File is rendered using default render formats,
+#' or as specified in `format`. Once the file is rendered, it is opened in the browser.
+#' Opening in browser will fail for .docx.
+#'
+#'
+#' @param path The path to search for .Rmd files.
+#' @param format The output formats. The default is `"all"`, all formats listed in the file.
+#'
+#'
+#' @return Nothing.
+rend <- function(path = ".", format = "all"){
+  rmd_files <- list.files(path = path,
+                          pattern="rmd$",
+                          recursive = TRUE,
+                          ignore.case = TRUE,
+                          include.dirs = TRUE)
+  choice <- menu(title = "Select a file to render():", choices = rmd_files)
+  output_file <- rmarkdown::render(output_format = format,
+                                   input = file.path(path, rmd_files[choice]))
+  browseURL(output_file)
+}
