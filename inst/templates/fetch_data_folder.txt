@@ -1,0 +1,7 @@
+library(googledrive)
+library(mmmisc)
+
+drive_download_dir(
+  drive_folder = googledrive::as_id("${a_link}"),
+  dl_path = '${dlpath}'
+)

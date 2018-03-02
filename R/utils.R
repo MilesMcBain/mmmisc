@@ -281,6 +281,7 @@ na_in <- function(df){
 #'
 #'
 #' @return Nothing.
+#' @export
 rend <- function(path = ".", format = "all"){
   rmd_files <- list.files(path = path,
                           pattern="rmd$",
@@ -291,4 +292,49 @@ rend <- function(path = ".", format = "all"){
   output_file <- rmarkdown::render(output_format = format,
                                    input = file.path(path, rmd_files[choice]))
   browseURL(output_file)
+}
+
+#' Generate an R file to fetch a folder or file from Google drive
+#'
+#' This function takes a link to a Google drive file or folder. If one is not supplied it will
+#' attempt to read one from the clipboard. Given a Google drive link, an R script to fetch the content
+#' is generated. The script is slightly different depending on whether the link points to a single file
+#' or folder. The R script is generated in the current working directory '.' and will download files to the
+#' current working directory '.'.
+#'
+#' @param a_link the google drive link
+#'
+#' @return nothing.
+#' @export
+#'
+generate_drive_fetch <- function(a_link){
+  if(missing(a_link)){
+    a_link <- clipr::read_clip()
+  }
+  resource_id <- googledrive::as_id(a_link)
+  resource <- googledrive::drive_get(resource_id)
+  resource_name <- resource$name[[1]]
+  dlpath = "."
+
+  if (resource$drive_resource[[1]]$mimeType == "application/vnd.google-apps.folder"){
+    # emit recursive drive fetch
+    template <- readLines(system.file("templates/fetch_data_folder.txt", package="mmmisc"))
+    fetch_text <- purrr::map(template, ~stringr::str_interp(., environment()))
+    file_name <- paste0("fetch_data_folder_",resource$id[[1]],".R")
+  }
+  else{
+    # emit file fetch
+    template <- readLines(system.file("templates/fetch_data_file.txt", package="mmmisc"))
+    fetch_text <- purrr::map(template, ~stringr::str_interp(., environment()))
+    file_name <- paste0("fetch_data_file_",resource$id[[1]],".R")
+  }
+  writeLines(unlist(fetch_text), file_name)
+}
+
+#' Source all drive data fetch scripts in current directory.
+#'
+#' @return nothing.
+#' @export
+drive_fetch_all <- function(){
+  purrr::walk(list.files(pattern = "fetch_data_"), source)
 }

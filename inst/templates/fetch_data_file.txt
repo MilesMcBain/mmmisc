@@ -1,0 +1,6 @@
+library(googledrive)
+
+drive_download(
+  file = googledrive::as_id("${a_link}"),
+  path = file.path('${dlpath}','${resource_name}')
+)
