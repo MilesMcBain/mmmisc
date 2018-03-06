@@ -19,7 +19,7 @@ howto <- function(package){
     lapply(X = paste(vignette_df$Dir, vignette_df$PDF, sep = "/doc/"),
            browseURL)
   }else{
-    message("[how_to] No Vignettes for package ", package, "!")
+    message("[howto] No Vignettes for package ", package, "!")
   }
   invisible(vignette_df)
 }
