@@ -313,20 +313,18 @@ generate_drive_fetch <- function(a_link){
   }
   resource_id <- googledrive::as_id(a_link)
   resource <- googledrive::drive_get(resource_id)
-  resource_name <- resource$name[[1]]
-  dlpath = "."
 
   if (resource$drive_resource[[1]]$mimeType == "application/vnd.google-apps.folder"){
     # emit recursive drive fetch
     template <- readLines(system.file("templates/fetch_data_folder.txt", package="mmmisc"))
     fetch_text <- purrr::map(template, ~stringr::str_interp(., environment()))
-    file_name <- paste0("fetch_data_folder_",resource$id[[1]],".R")
+    file_name <- paste0("fetch_data_folder_",resource$id[[1]], ".R")
   }
   else{
     # emit file fetch
     template <- readLines(system.file("templates/fetch_data_file.txt", package="mmmisc"))
     fetch_text <- purrr::map(template, ~stringr::str_interp(., environment()))
-    file_name <- paste0("fetch_data_file_",resource$id[[1]],".R")
+    file_name <- paste0("fetch_data_file_", resource$id[[1]], ".R")
   }
   writeLines(unlist(fetch_text), file_name)
 }
