@@ -162,11 +162,11 @@ order_as_per <- function(fctr, order_chars){
 #' like .GlobalEnv or a binding to sys.frame().
 #'
 #' @param ... text to parse and evaluate
-#' @param env an environment to evaulate parsed expressions in.
+#' @param env an environment to evaulate parsed expressions in. Defaults to parent.frame().
 #'
 #' @return the result of the evaluation.
-#' @export
-P0PE <- function(..., .env){
+#' @exporty
+P0PE <- function(..., .env = parent.frame()){
   eval(parse(text = paste0(...)), envir = .env)
 }
 
