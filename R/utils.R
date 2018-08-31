@@ -336,3 +336,16 @@ generate_drive_fetch <- function(a_link){
 drive_fetch_all <- function(){
   purrr::walk(list.files(pattern = "fetch_data_"), source)
 }
+
+##' Preview a data frame (or tibble)
+##'
+##' Tibble has some issues with its pillar output and Emacs buffers. This
+##' function will sample a data frame or tibble and return a plain data.frame.
+##'
+##' @title df_preview
+##' @param a_df a data.frame or compatible object.
+##' @param n_rows a number of rows to sample for the preview.
+##' @return a data.frame with n_rows
+df_preview <- function(a_df, n_rows = 300){
+  as.data.frame(dplyr::sample_n(a_df, n_rows))
+}
