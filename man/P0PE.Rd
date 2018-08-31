@@ -4,12 +4,12 @@
 \alias{P0PE}
 \title{Paste0, Parse, Eval}
 \usage{
-P0PE(..., .env)
+P0PE(..., .env = parent.frame())
 }
 \arguments{
 \item{...}{text to parse and evaluate}
 
-\item{env}{an environment to evaulate parsed expressions in.}
+\item{env}{an environment to evaulate parsed expressions in. Defaults to parent.frame().}
 }
 \value{
 the result of the evaluation.

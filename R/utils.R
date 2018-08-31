@@ -165,7 +165,7 @@ order_as_per <- function(fctr, order_chars){
 #' @param env an environment to evaulate parsed expressions in. Defaults to parent.frame().
 #'
 #' @return the result of the evaluation.
-#' @exporty
+#' @export
 P0PE <- function(..., .env = parent.frame()){
   eval(parse(text = paste0(...)), envir = .env)
 }
@@ -346,6 +346,7 @@ drive_fetch_all <- function(){
 ##' @param a_df a data.frame or compatible object.
 ##' @param n_rows a number of rows to sample for the preview.
 ##' @return a data.frame with n_rows
+##' @export
 df_preview <- function(a_df, n_rows = 300){
   as.data.frame(dplyr::sample_n(a_df, n_rows))
 }
