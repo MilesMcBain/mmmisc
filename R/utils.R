@@ -348,5 +348,9 @@ drive_fetch_all <- function(){
 ##' @return a data.frame with n_rows
 ##' @export
 df_preview <- function(a_df, n_rows = 300){
+  if(dplyr::is.grouped_df(a_df)) a_df <- dplyr::ungroup(a_df)
+
+  if(nrow(a_df) <= n_rows) n_rows <- nrow(a_df)
+
   as.data.frame(dplyr::sample_n(a_df, n_rows))
 }
