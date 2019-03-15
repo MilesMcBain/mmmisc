@@ -354,3 +354,14 @@ df_preview <- function(a_df, n_rows = 300){
 
   as.data.frame(dplyr::sample_n(a_df, n_rows))
 }
+
+##' install a githup repo using the master.zip
+##'
+##' This is useful if you find yourself trapped behind a man in the middle proxy that is stuffing up your ssl traffic.
+##' @title install_ghzip
+##' @param name_repo a github repo identifier, name/repo e.g. "milesmcbain/mmmisc"
+##' @return nothing. Installs package.
+##' @export
+install_ghzip <- function(name_repo){
+  devtools::install_url(glue::glue("https://www.github.com/{name_repo}/archive/master.zip"))
+}
