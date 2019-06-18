@@ -365,3 +365,16 @@ df_preview <- function(a_df, n_rows = 300){
 install_ghzip <- function(name_repo){
   devtools::install_url(glue::glue("https://www.github.com/{name_repo}/archive/master.zip"))
 }
+
+##' install_clipboard
+##'
+##' Assuming the clipboard is a series of library(pkg) calls, install all of them.
+##' 
+##' @title Install the clipboard
+##' @return nothing
+##' @export
+install_clipboard <- function() {
+  install.packages(gsub(pattern = "library\\(([A-Za-z0-9.]+)\\)",
+                        replacement = "\\1",
+                        clipr::read_clip()))
+}
