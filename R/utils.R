@@ -411,7 +411,7 @@ set_lib_paths <- function(lib_vec) {
 ##' @export
 isolate_renv <- function() {
 
-  paths <- .libPaths
+  paths <- .libPaths()
   set_lib_paths(paths[[1]])
 
 }
