@@ -369,7 +369,7 @@ install_ghzip <- function(name_repo){
 ##' install_clipboard
 ##'
 ##' Assuming the clipboard is a series of library(pkg) calls, install all of them.
-##' 
+##'
 ##' @title Install the clipboard
 ##' @return nothing
 ##' @export
@@ -377,4 +377,41 @@ install_clipboard <- function() {
   install.packages(gsub(pattern = "library\\(([A-Za-z0-9.]+)\\)",
                         replacement = "\\1",
                         clipr::read_clip()))
+}
+
+##' Set your R library paths at run time
+##'
+##'
+##' A wrapper for .libPaths that removes .Library and .Library.site from your
+##' library paths while adding the contents of the character vector `lib_vec`.
+##'
+##' @title set_lib_paths
+##' @return nothing
+##' @export
+set_lib_paths <- function(lib_vec) {
+
+  lib_vec <- normalizePath(lib_vec, mustWork = TRUE)
+
+  shim_fun <- .libPaths
+  shim_env <- new.env(parent = environment(shim_fun))
+  shim_env$.Library <- character()
+  shim_env$.Library.site <- character()
+
+  environment(shim_fun) <- shim_env
+  shim_fun(lib_vec)
+
+}
+
+##' Set your libPaths to .libPaths()[[1]]
+##'
+##' If you're using 'renv' this will hopefully remove your system libraries and give you an isolated environment.
+##'
+##' @title  isolate_renv()
+##' @return nothing
+##' @export
+isolate_renv <- function() {
+
+  paths <- .libPaths
+  set_lib_paths(paths[[1]])
+
 }
