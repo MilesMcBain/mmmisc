@@ -379,6 +379,39 @@ install_clipboard <- function() {
                         clipr::read_clip()))
 }
 
+##' install_block
+##'
+##' like install_clipboard but calls install.packages on a length 1 character vector containing something like:
+##'  
+##' "library(drake)
+##' library(tsibble)
+##' library(sf)
+##' library(curl)
+##' library(lubridate)
+##' library(mgcv)
+##' library(mgcViz)
+##' library(rmarkdown)
+##' library(knitr)
+##' library(flexdashboard)
+##' library(plotly)
+##' library(tidyverse)"
+##'
+##' 
+##' @title  install_block
+##' @return  nothing.
+##' @export
+install_block <- function(block) {
+
+  lines <- unlist(strsplit(block, "\n"))
+
+  packages <- gsub(pattern = "library\\(([A-Za-z0-9.]+)\\)",
+                   replacement = "\\1",
+                   lines)
+
+  install.packages(packages)
+
+}
+
 ##' Set your R library paths at run time
 ##'
 ##'
