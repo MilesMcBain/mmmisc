@@ -347,12 +347,16 @@ drive_fetch_all <- function(){
 ##' @param n_rows a number of rows to sample for the preview.
 ##' @return a data.frame with n_rows
 ##' @export
-df_preview <- function(a_df, n_rows = 300){
-  if(dplyr::is.grouped_df(a_df)) a_df <- dplyr::ungroup(a_df)
+df_preview <- function(a_df, n_rows = 300) {
+  withr::with_options(new = list(width = 10000),
+                      code = {
+                        if(dplyr::is.grouped_df(a_df)) a_df <- dplyr::ungroup(a_df)
+                        
+                        if(nrow(a_df) <= n_rows) n_rows <- nrow(a_df)
 
-  if(nrow(a_df) <= n_rows) n_rows <- nrow(a_df)
-
-  as.data.frame(dplyr::sample_n(a_df, n_rows))
+                        print(as.data.frame(dplyr::sample_n(a_df, n_rows)))
+                      }
+                      )
 }
 
 ##' install a githup repo using the master.zip
@@ -412,39 +416,18 @@ install_block <- function(block) {
 
 }
 
-##' Set your R library paths at run time
+##' Detect dependencies in a file and install those that are missing
 ##'
-##'
-##' A wrapper for .libPaths that removes .Library and .Library.site from your
-##' library paths while adding the contents of the character vector `lib_vec`.
-##'
-##' @title set_lib_paths
-##' @return nothing
+##' @title install_missing_deps
+##' @param dep_file
+##' @return nothing. Installs as side effect.
+##' @author Miles McBain
 ##' @export
-set_lib_paths <- function(lib_vec) {
+install_missing_deps <- function(dep_file) {
 
-  lib_vec <- normalizePath(lib_vec, mustWork = TRUE)
-
-  shim_fun <- .libPaths
-  shim_env <- new.env(parent = environment(shim_fun))
-  shim_env$.Library <- character()
-  shim_env$.Library.site <- character()
-
-  environment(shim_fun) <- shim_env
-  shim_fun(lib_vec)
-
-}
-
-##' Set your libPaths to .libPaths()[[1]]
-##'
-##' If you're using 'renv' this will hopefully remove your system libraries and give you an isolated environment.
-##'
-##' @title  isolate_renv()
-##' @return nothing
-##' @export
-isolate_renv <- function() {
-
-  paths <- .libPaths()
-  set_lib_paths(paths[[1]])
+  deps <- renv::dependencies(dep_file)$Package
+  installed_deps <- as.data.frame(installed.packages())$Package
+  to_install_deps <- setdiff(deps, installed_deps)
+  install.packages(to_install_deps)
 
 }
