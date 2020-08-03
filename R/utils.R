@@ -351,7 +351,7 @@ df_preview <- function(a_df, n_rows = 300) {
   withr::with_options(new = list(width = 10000),
                       code = {
                         if(dplyr::is.grouped_df(a_df)) a_df <- dplyr::ungroup(a_df)
-                        
+
                         if(nrow(a_df) <= n_rows) n_rows <- nrow(a_df)
 
                         print(as.data.frame(dplyr::sample_n(a_df, n_rows)))
@@ -386,7 +386,7 @@ install_clipboard <- function() {
 ##' install_block
 ##'
 ##' like install_clipboard but calls install.packages on a length 1 character vector containing something like:
-##'  
+##'
 ##' "library(drake)
 ##' library(tsibble)
 ##' library(sf)
@@ -400,7 +400,7 @@ install_clipboard <- function() {
 ##' library(plotly)
 ##' library(tidyverse)"
 ##'
-##' 
+##'
 ##' @title  install_block
 ##' @return  nothing.
 ##' @export
@@ -430,4 +430,67 @@ install_missing_deps <- function(dep_file) {
   to_install_deps <- setdiff(deps, installed_deps)
   install.packages(to_install_deps)
 
+}
+
+##' quick plot save
+##'
+##' save a plot with ragg
+##'
+##' @title save_plot
+##' @param filename to save
+##' @param a_plot a plot object
+##' @return nothing
+##' @author Miles McBain
+##' @export
+save_plot <- function(filename,
+                      a_plot) {
+
+  ggsave(filename,
+         plot = a_plot,
+         device = ragg::agg_png,
+         width = 8,
+         height = 8,
+         res = 200)
+
+}
+
+##' Get the symbol at the rstudio cursor
+##'
+##' to do something with it. I originally implemented this in drake.
+##'
+##' @title rs_get_symbol_at_cursor
+##' @param context probably rstudioapi::getActiveDocumentContext()
+##' @return the symbol the cursor is on as text
+##' @author Miles McBain
+##' @export
+rs_get_symbol_at_cursor <- function(context) {
+  if (identical(context$id, "#console")) {
+    return(NULL)
+  }
+  cursor_pos <- context$selection[[1]]$range$start
+  cursor_line <- cursor_pos[1]
+  cursor_column <- cursor_pos[2]
+  r_symbol_pattern <- "[.A-Za-z][.A-Za-z0-9_]+"
+  line_symbols <- gregexpr(
+    text = context$contents[cursor_line],
+    pattern = r_symbol_pattern
+  )
+  match_starts <- line_symbols[[1]]
+  match_ends <- match_starts + attr(x = line_symbols[[1]], "match.length") - 1
+  match_index <- which(
+    cursor_column >= match_starts &
+      cursor_column <= match_ends
+  )
+  if (length(match_index) == 0) {
+    cli_msg(
+      "Could not find object name at cursor position.",
+      cli_sym = cli::col_red(cli::symbol$cross)
+    )
+    return(NULL)
+  }
+  substr(
+    context$contents[cursor_line],
+    start = match_starts[match_index],
+    stop = match_ends[match_index]
+  )
 }

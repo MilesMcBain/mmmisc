@@ -14,7 +14,7 @@ install_block
 }
 \details{
 like install_clipboard but calls install.packages on a length 1 character vector containing something like:
- 
+
 "library(drake)
 library(tsibble)
 library(sf)
